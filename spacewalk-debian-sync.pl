@@ -148,7 +148,7 @@ foreach $package (split(/\n\n/, $packages)) {
   }
   $inrepo{basename($fileurl)} = $fileurl;
   &debug("Package ".basename($fileurl)." at $fileurl\n");
-
+  
   my @tver = split('-',$ver);
   
   my $spack = "$pack|$arch|".$tver[0];
@@ -176,10 +176,12 @@ foreach $_ (keys %download) {
  
   $mech->get("$debianroot/$download{$_}", ':content_file' => "/tmp/$_");
   if ($mech->success) {
-    system("rhnpush -c $channel -u $username -p $password /tmp/$_");
-    if ($? > 0) { die "ERROR: rhnpush failed\n"; }
+    system("bash /opt/strip.sh /tmp/$_");
+    system("rhnpush -c $channel -u $username -p $password /tmp/$_ && rm /tmp/$_ &");
+    if ($? > 0) { print "ERROR: rhnpush failed\n"; }
+    #exit;
   }
-  unlink("/tmp/$_");
+  #unlink("/tmp/$_");
 }
 
 &info("Sync complete.\n");
