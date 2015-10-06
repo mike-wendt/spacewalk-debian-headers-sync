@@ -44,7 +44,8 @@ my $debug = 0;
 my ($getopt, $url, $channel, $username, $password, $debianroot);
 my $mech;
 my ($packages, $package);
-my ($pkgname, $fileurl, $md5, $sha1, $sha256);
+my ($pkgname, $fileurl, $pack, $arch, $ver);
+my ($rpack, $rarch, $rver);
 my ($client, $session, $allpkg);
 my (%inrepo, %inchannel);
 my ($synced, $tosync);
@@ -107,7 +108,14 @@ if ($session =~ /^\w+$/) {
 $allpkg = $client->call('channel.software.list_all_packages', $session, $channel);
 foreach my $pkg (@$allpkg) {
   &debug("Found $pkg->{'name'} with checksum $pkg->{'checksum'}\n");
-  $inchannel{$pkg->{'checksum'}} = 1;
+  $rarch = $pkg->{'arch_label'};
+  $rarch =~ s/-deb//g;
+  $rpack = "$pkg->{'name'}|$rarch|$pkg->{'version'}-$pkg->{'release'}";
+  if ($pkg->{'release'} eq "X") {
+    $rpack = "$pkg->{'name'}|$rarch|$pkg->{'version'}";
+  }
+  #&info("$rpack\n");
+  $inchannel{$rpack} = 1;
 }
 
 # Logout from API
@@ -134,16 +142,21 @@ $synced = 0;
 foreach $package (split(/\n\n/, $packages)) {
   foreach $_ (split(/\n/, $package)) {
     if (/^Filename: (.*)$/) { $fileurl = $1; };
-    if (/^MD5sum: (.*)$/)   { $md5     = $1; };
-    if (/^SHA1: (.*)$/)     { $sha1    = $1; };
-    if (/^SHA256: (.*)$/)   { $sha256  = $1; };
+    if (/^Package: (.*)$/) { $pack = $1; };
+    if (/^Version: (.*)$/)   { $ver = $1; };
+    if (/^Architecture: (.*)$/) { $arch = $1; };
   }
   $inrepo{basename($fileurl)} = $fileurl;
   &debug("Package ".basename($fileurl)." at $fileurl\n");
 
-  if ( (not(defined($inchannel{$md5}))) &&
-       (not(defined($inchannel{$sha1}))) &&
-       (not(defined($inchannel{$sha256}))) ) {
+  my @tver = split('-',$ver);
+  
+  my $spack = "$pack|$arch|".$tver[0];
+  if (@tver > 1) {
+    $spack = "$pack|$arch|".$tver[0]."-".$tver[1];
+  }
+  #&info("$spack\n");
+  if ( (not(defined($inchannel{$spack}))) ) {
     $download{basename($fileurl)} = $fileurl;
     $tosync++;
     &debug(basename($fileurl)." needs to be synced\n");
