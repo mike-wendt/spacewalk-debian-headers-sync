@@ -176,7 +176,7 @@ foreach $_ (keys %download) {
  
   $mech->get("$debianroot/$download{$_}", ':content_file' => "/tmp/$_");
   if ($mech->success) {
-    system("bash /opt/strip.sh /tmp/$_");
+    system("bash strip.sh /tmp/$_");
     system("rhnpush -c $channel -u $username -p $password /tmp/$_ && rm /tmp/$_ &");
     if ($? > 0) { print "ERROR: rhnpush failed\n"; }
     #exit;
