@@ -176,12 +176,11 @@ foreach $_ (keys %download) {
  
   $mech->get("$debianroot/$download{$_}", ':content_file' => "/tmp/$_");
   if ($mech->success) {
-    system("bash strip.sh /tmp/$_");
-    system("rhnpush -c $channel -u $username -p $password /tmp/$_ && rm /tmp/$_ &");
-    if ($? > 0) { print "ERROR: rhnpush failed\n"; }
-    #exit;
+    system("bash strip.sh /tmp/$_ $channel $username $password &");
+    # Wait 500ms to prevent overloading Postgres with many rhnpush requests
+    # This is faster than waiting for each rhnpush to complete
+    select(undef, undef, undef, 0.5);
   }
-  #unlink("/tmp/$_");
 }
 
 &info("Sync complete.\n");
