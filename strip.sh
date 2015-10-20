@@ -11,7 +11,9 @@ FILE=`ar t ${1} | sort | tr '\n' ' ' | awk '{ print $2 }'`
 
 # Replaces the binary content with a zero byte file
 cd /tmp
-touch $FILE
+if [ ! -f /tmp/$FILE ]; then
+  touch $FILE
+fi
 ar ro ${1} $FILE
 
 # Push file to Spacewalk
