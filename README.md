@@ -1,7 +1,7 @@
-spacewalk-debian-sync
-=====================
+spacewalk-debian-headers-sync
+=============================
 
-An improvised repo-sync to bring Debian packages into Spacewalk that has been modified to import **header data from files only**. This does **not** import packages to Spacewalk that can be used for installation on machines.
+An improvised repo-sync to bring Debian packages into Spacewalk that has been modified from <https://github.com/stevemeier/spacewalk-debian-sync> to import **header data from files only**. This does **not** import packages to Spacewalk that can be used for installation on machines.
 
 ## Background and Reasoning
 
