@@ -39,6 +39,10 @@ APT {
         }
   }
 };
+DPkg::Post-Invoke {
+    "/usr/lib/apt-spacewalk/post_invoke.py";
+};
+EOF
 ```
 2. Remove `/etc/apt/sources.list.d/spacewalk.list` so `apt` no longer tries to contact Spacewalk for packages directly
 3. Ensure `/etc/apt/sources.list` is populated with mirrors that can be reached to directly retrieve packages
