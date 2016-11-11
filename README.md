@@ -10,7 +10,8 @@ Spacewalk copies all packages to itself for updating and package management, whi
 There are many issues for storing all of the packages in Spacewalk:
 * Disk space; no easy way to remove old pacakages
 * `Packages.gz` offered by Spacewalk for Debian/Ubuntu packages are not formatted properly - need to run a script to fix the formatting so `apt-get` will work correctly when sourcing only from Spacewalk
-* Spacewalk needs the metadata from the packages to manage them; unfortunately when syncing `universe` and `main` we do get a lot of packages like `libreoffice` and others that are multi GBs that in our server sytems we will never use  * Again this goes back to the first issue of disk space and trying to filter out all of these packages do not make sense so another approach was taken.
+* Spacewalk needs the metadata from the packages to manage them; unfortunately when syncing `universe` and `main` we do get a lot of packages like `libreoffice` and others that are multi GBs that in our server sytems we will never use  
+* Again this goes back to the first issue of disk space and trying to filter out all of these packages do not make sense so another approach was taken.
 
 ## Headers Only Approach
 
