@@ -19,6 +19,9 @@ Given the limitations for Debian/Ubuntu support on Spacewalk the best way I coul
 
 Additionally this method would mean that we would not need to worry about old package clean up or deal with the package management bugs in Spacewalk as they exist right now. This script has been modified to strip out the binary data from all packages and sync them with Spacewalk repositories.
 
+### How It Works
+![headers only process](headers.png)
+
 ## Running
 
 Includeded is a script `spacewalk-sync.sh` that shows an example of how to import packages into `trusty` and `trusty-i386` channels and their sub-channels. Feel free to modify the file and run as a `cron` job to keep your Spacewalk instance in sync like I do.
