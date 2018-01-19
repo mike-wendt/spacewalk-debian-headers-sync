@@ -110,9 +110,20 @@ foreach my $pkg (@$allpkg) {
   &debug("Found $pkg->{'name'} with checksum $pkg->{'checksum'}\n");
   $rarch = $pkg->{'arch_label'};
   $rarch =~ s/-deb//g;
-  $rpack = "$pkg->{'name'}|$rarch|$pkg->{'version'}-$pkg->{'release'}";
-  if ($pkg->{'release'} eq "X") {
-    $rpack = "$pkg->{'name'}|$rarch|$pkg->{'version'}";
+  my @rversionarr = split('-',$pkg->{'version'});
+  if ($pkg->{'release'} ne 'X') {
+    push @rversionarr, $pkg->{'release'};
+  }
+  if (@rversionarr > 1) {
+    $rver = "$rversionarr[0]-$rversionarr[1]";
+  } else {
+    $rver = $rversionarr[0];
+  }
+  #$rpack = "$pkg->{'name'}|$rarch|$rver-$pkg->{'release'}";
+  if (length $pkg->{'epoch'}) {
+    $rpack = "$pkg->{'name'}|$rarch|$pkg->{'epoch'}:$rver";
+  } else {
+    $rpack = "$pkg->{'name'}|$rarch|$rver";
   }
   #&info("$rpack\n");
   $inchannel{$rpack} = 1;
